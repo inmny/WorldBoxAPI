@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace WorldBoxAPI.Compatability {
+namespace WorldBoxAPI.Compatibility {
     [Serializable]
     internal class ModDeclare {
         [JsonProperty("name")]

@@ -36,14 +36,6 @@ namespace WorldBoxAPI.Graphics {
             Selected = AtlasTool.GetSprite("tab_buttons_selected", AtlasType.SpriteAtlasUI);
         }
 
-        public TabBuilder AddButton(ButtonBuilder buttonBuilder, int section) {
-            _ = buttonBuilder ?? throw new ArgumentNullException(nameof(buttonBuilder));
-
-            buttonBuilder.SetSection(section);
-            Buttons.Add(buttonBuilder);
-            return this;
-        }
-
         /// <summary>
         /// Add back tab button. Not implemented.
         /// </summary>
@@ -51,6 +43,14 @@ namespace WorldBoxAPI.Graphics {
         /// <exception cref="NotImplementedException"></exception>
         public TabBuilder AddBackButton() {
             throw new NotImplementedException();
+        }
+
+        public TabBuilder AddButton(ButtonBuilder buttonBuilder, int section) {
+            _ = buttonBuilder ?? throw new ArgumentNullException(nameof(buttonBuilder));
+
+            buttonBuilder.SetSection(section);
+            Buttons.Add(buttonBuilder);
+            return this;
         }
 
         /// <summary>
@@ -176,11 +176,13 @@ namespace WorldBoxAPI.Graphics {
         /// Set tab icon with path.
         /// </summary>
         /// <param name="path"></param>
-        /// <returns>The TabBuilder instance.</returns>
+        /// <returns>The TabBuilder instnace.</returns>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public TabBuilder SetIcon(string path) {
             _ = path ?? throw new ArgumentNullException(nameof(path));
-            Icon = Resources.Load<Sprite>(path);
+            Sprite icon = Resources.Load<Sprite>(path);
+            _ = icon ?? throw new ArgumentException(nameof(path), $"Failed to load \"{path}\" as a sprite.");
             return this;
         }
 

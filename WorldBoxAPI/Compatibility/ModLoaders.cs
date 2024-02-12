@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using WorldBoxAPI.Constants;
 
-namespace WorldBoxAPI.Compatability {
+namespace WorldBoxAPI.Compatibility {
     public static class ModLoaders {
         public static bool NMLLoaded { get; internal set; }
         public static bool NCMSLoaded { get; internal set; }

@@ -4,6 +4,11 @@
   "test": "test",
   "tab_Test": "Test",
   "Test": "Title",
+  "Test1": "Title",
+  "Test2": "Title",
+  "Test3": "Title",
+  "Test4": "Title",
+  "Test5": "Title",
   "Test_description": "Description",
   "Button WBAPI": "WBAPI Button"
 }

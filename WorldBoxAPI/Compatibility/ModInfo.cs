@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using WorldBoxAPI.Extensions;
 
-namespace WorldBoxAPI.Compatability {
+namespace WorldBoxAPI.Compatibility {
     [Serializable]
     public class ModInfo {
         public string Author { get; private set; }

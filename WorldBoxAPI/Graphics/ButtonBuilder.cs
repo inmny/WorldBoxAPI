@@ -13,11 +13,13 @@ namespace WorldBoxAPI.Graphics {
         private Sprite Icon { get; set; }
         private string Id { get; set; }
         private ButtonRow Row { get; set; }
+        private Vector2 Scale { get; set; }
         private int Section { get; set; }
         private ButtonStyle Style { get; set; }
         private TabManager Tab { get; set; }
         private string TitleKey { get; set; }
         private PowerButtonType Type { get; set; }
+        private WindowManager Window { get; set; }
         private string WindowId { get; set; }
 
         /// <summary>
@@ -87,15 +89,24 @@ namespace WorldBoxAPI.Graphics {
             throw new NotImplementedException("Adding buttons to vanilla tabs is currently unsupported.");
         }
 
+        public ButtonBuilder AddToWindow(string id) {
+            throw new NotImplementedException("Adding buttons to windows is currently unsupported");
+        }
+
+        public ButtonBuilder AddToWindow(Windows window) {
+            throw new NotImplementedException("Adding buttons to windows is currently unsupported");
+        }
+
         /// <summary>
         /// Build the button.
         /// </summary>
         /// <returns>The ButtonBuilder instance.</returns>
         /// <exception cref="NullReferenceException"></exception>
         public ButtonBuilder Build() {
-            _ = Tab ?? throw new NullReferenceException("Button cannot be built without a parent set.");
+            if (Tab is null && Window is null) {
+                throw new NullReferenceException("Button cannot be built without a parent set.");
+            }
 
-            // Checks
             if (!ActionSet) {
                 Plugin.Logger.LogWarning($"Button \"{Id}\" has no action!");
             }
@@ -114,38 +125,34 @@ namespace WorldBoxAPI.Graphics {
             // Set parent
             iconObject.transform.SetParent(buttonObject.transform);
 
-            // Resize button
+            // Size button
+            buttonObject.GetComponent<RectTransform>().sizeDelta = Scale;
+            iconObject.GetComponent<RectTransform>().sizeDelta = Scale - new Vector2(UI.BUTTON_ICON_PADDING, UI.BUTTON_ICON_PADDING);
             buttonObject.transform.localScale = Vector3.one;
             iconObject.transform.localScale = Vector3.one;
 
-            // Make button from style
+            // Get button style
             switch (Style) {
                 case ButtonStyle.Small:
-                    buttonObject.GetComponent<RectTransform>().sizeDelta = UI.SMALL_BUTTON_SIZE;
-                    iconObject.GetComponent<RectTransform>().sizeDelta = UI.SMALL_BUTTON_ICON_SIZE;
                     image.sprite = Resources.Load<Sprite>("ui/button");
                     break;
                 case ButtonStyle.Medium:
-                    buttonObject.GetComponent<RectTransform>().sizeDelta = UI.MEDIUM_BUTTON_SIZE;
-                    iconObject.GetComponent<RectTransform>().sizeDelta = UI.MEDIUM_BUTTON_ICON_SIZE;
                     image.sprite = Resources.Load<Sprite>("ui/buttonMedium");
                     break;
                 case ButtonStyle.Long:
-                    buttonObject.GetComponent<RectTransform>().sizeDelta = UI.LONG_BUTTON_SIZE;
-                    iconObject.GetComponent<RectTransform>().sizeDelta = UI.LONG_BUTTON_ICON_SIZE;
                     image.sprite = Resources.Load<Sprite>("ui/buttonLong");
                     break;
                 case ButtonStyle.SpecialRed:
-                    buttonObject.GetComponent<RectTransform>().sizeDelta = UI.SMALL_BUTTON_SIZE;
-                    iconObject.GetComponent<RectTransform>().sizeDelta = UI.SMALL_BUTTON_ICON_SIZE;
                     image.sprite = AtlasTool.GetSprite("special_buttonRed", AtlasType.SpriteAtlasUI);
+                    image.type = Image.Type.Sliced;
                     break;
                 case ButtonStyle.SpecialRedBorder:
-                    buttonObject.GetComponent<RectTransform>().sizeDelta = UI.SMALL_BUTTON_SIZE;
-                    iconObject.GetComponent<RectTransform>().sizeDelta = UI.SMALL_BUTTON_ICON_SIZE;
                     image.sprite = AtlasTool.GetSprite("special_buttonRed_insides", AtlasType.SpriteAtlasUI);
+                    image.type = Image.Type.Sliced;
                     break;
             }
+
+            // Add icon
             icon.sprite = Icon;
 
             // Setup tip so it uses the custom key and has the hotkey in its description
@@ -187,14 +194,15 @@ namespace WorldBoxAPI.Graphics {
                 throw new ArgumentException($"Position \"{style}\" is not defined by TabPosition.", nameof(style));
             }
 
+            ActionSet = false;
+            DescriptionKey = $"{id}_description";
+            Icon = Resources.Load<Sprite>("WorldBoxAPI/UI/Icons/IconTemp");
             Id = id;
+            Scale = StyleToScale(style);
             Type = (PowerButtonType) (-1);
             Style = style;
-            ActionSet = false;
-            TitleKey = Id;
+            TitleKey = id;
             WindowId = string.Empty;
-            DescriptionKey = $"{Id}_description";
-            Icon = Resources.Load<Sprite>("WorldBoxAPI/UI/Icons/IconTemp");
             Section = 1;
             return this;
         }
@@ -229,6 +237,17 @@ namespace WorldBoxAPI.Graphics {
             Type = PowerButtonType.Active;
             ActionSet = true;
             GodPower = godPower;
+            return this;
+        }
+
+        /// <summary>
+        /// Set button height
+        /// </summary>
+        /// <param name="height"></param>
+        /// <returns>The ButtonBuilder instance.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public ButtonBuilder SetHeight(float height) {
+            Scale = new Vector2(Scale.x, height);
             return this;
         }
 
@@ -272,6 +291,16 @@ namespace WorldBoxAPI.Graphics {
         }
 
         /// <summary>
+        /// Set button scale.
+        /// </summary>
+        /// <param name="scale"></param>
+        /// <returns>The ButtonBuilder instance.</returns>
+        public ButtonBuilder SetScale(Vector2 scale) {
+            Scale = scale;
+            return this;
+        }
+
+        /// <summary>
         /// Set button section within tab.
         /// </summary>
         /// <param name="section"></param>
@@ -283,6 +312,16 @@ namespace WorldBoxAPI.Graphics {
             }
 
             Section = section;
+            return this;
+        }
+
+        /// <summary>
+        /// Set button width.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <returns>The ButtonBuilder instance.</returns>
+        public ButtonBuilder SetWidth(float width) {
+            Scale = new Vector2(width, Scale.y);
             return this;
         }
 
@@ -305,6 +344,21 @@ namespace WorldBoxAPI.Graphics {
             ActionSet = true;
             WindowId = id;
             return this;
+        }
+
+        private Vector2 StyleToScale(ButtonStyle style) {
+            switch (style) {
+                case ButtonStyle.Small:
+                case ButtonStyle.SpecialRed:
+                case ButtonStyle.SpecialRedBorder:
+                    return UI.SMALL_BUTTON_SIZE;
+                case ButtonStyle.Medium:
+                    return UI.MEDIUM_BUTTON_SIZE;
+                case ButtonStyle.Long:
+                    return UI.LONG_BUTTON_SIZE;
+                default:
+                    return Vector2.zero;
+            }
         }
     }
 }

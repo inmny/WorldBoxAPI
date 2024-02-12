@@ -2,7 +2,7 @@
 using BepInEx.Logging;
 using HarmonyLib;
 using System.Reflection;
-using WorldBoxAPI.Compatability;
+using WorldBoxAPI.Compatibility;
 using WorldBoxAPI.Constants;
 using WorldBoxAPI.Extensions;
 using WorldBoxAPI.ResourceTools;
@@ -13,7 +13,7 @@ namespace WorldBoxAPI.BepInEx {
         public static new ManualLogSource Logger;
         private const string pluginGuid = "apexlite.worldbox.wbapi";
         private const string pluginName = "WorldBoxAPI";
-        private const string pluginVersion = "0.1.0";
+        private const string pluginVersion = "0.1.1";
         private bool gameLoaded = false;
 
         void Awake() {

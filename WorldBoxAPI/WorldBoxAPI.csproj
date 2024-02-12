@@ -77,10 +77,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BepInEx\WorldBoxAPI\Plugin.cs" />
-    <Compile Include="Compatability\ModDeclare.cs" />
-    <Compile Include="Compatability\ModInfo.cs" />
-    <Compile Include="Compatability\ModLoaders.cs" />
-    <Compile Include="Compatability\NCMod.cs" />
+    <Compile Include="Compatibility\ModDeclare.cs" />
+    <Compile Include="Compatibility\ModInfo.cs" />
+    <Compile Include="Compatibility\ModLoaders.cs" />
+    <Compile Include="Compatibility\NCMod.cs" />
     <Compile Include="Constants\GameObjects.cs" />
     <Compile Include="Constants\Paths.cs" />
     <Compile Include="Constants\UI.cs" />
@@ -95,6 +95,8 @@
     <Compile Include="Graphics\TabPosition.cs" />
     <Compile Include="Graphics\Tabs.cs" />
     <Compile Include="Graphics\WindowBuilder.cs" />
+    <Compile Include="Graphics\WindowManager.cs" />
+    <Compile Include="Graphics\Windows.cs" />
     <Compile Include="Patches\Resources.cs" />
     <Compile Include="ResourceTools\AtlasTool.cs" />
     <Compile Include="ResourceTools\AtlasType.cs" />

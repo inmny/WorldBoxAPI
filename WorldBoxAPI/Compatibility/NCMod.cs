@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldBoxAPI.Compatability {
+namespace WorldBoxAPI.Compatibility {
     [Serializable]
     internal class NCMod {
         public string name { get; set; }
